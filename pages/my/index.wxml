@@ -1,0 +1,225 @@
+<import src="/template/login/index.wxml" />
+
+<view wx:if="{{apiUserInfoMap}}" class="header-box">
+  <image class="avatar" src="{{ apiUserInfoMap.base.avatarUrl }}" mode="aspectFill"></image>
+	<view class="r">
+    <view class="uid">用户ID: {{ apiUserInfoMap.base.id }}</view>
+    <view class="nick">{{ apiUserInfoMap.base.nick }}</view>
+  </view>
+</view>
+<view wx:else class="header-box">
+  <image class="avatar" src="/images/nologin2.png"></image>
+	<van-button plain custom-class="btn" size="small" open-type="getUserInfo" bind:getuserinfo="processLogin">立即登录</van-button>
+</view>
+
+<view class="container">
+  <view class="asset">
+    <view class='item' bindtap='goAsset'>
+      <view>{{balance}}</view>
+      <view>余额</view>
+    </view>
+    <view class='item right' bindtap='goAsset'>
+      <view>{{freeze}}</view>
+      <view>冻结</view>
+    </view>
+    <view class='item right' bindtap='goScore'>
+      <view>{{score}}</view>
+      <view>积分</view>
+    </view>
+    <navigator url="/pages/score/growth">
+      <view class='item right'>
+        <view>{{growth}}</view>
+        <view>成长值</view>
+      </view>
+    </navigator>
+  </view>
+  <view class="space"></view>
+  <navigator url="/pages/order-list/index">
+    <view class="menu-item">
+      <view class="l">我的订单</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <view class='order-shortcut'>
+    <!-- https://www.iconfont.cn/collections/detail?spm=a313x.7781069.0.da5a778a4&cid=2767 -->
+    <view class='item' bindtap='goOrder' data-type="0">
+      <view wx:if="{{count_id_no_pay !== 0}}" class='dot'>{{count_id_no_pay}}</view>
+      <image class="icon" src="/images/order/topay.png" background-size="cover"></image>
+      <view class='text'>待付款</view>
+    </view>
+    <view class='item' bindtap='goOrder' data-type="1">
+      <view wx:if="{{count_id_no_transfer !== 0}}" class='dot'>{{count_id_no_transfer}}</view>
+      <image class="icon" src="/images/order/fahuo.png" background-size="cover"></image>
+      <view class='text'>待发货</view>
+    </view>
+    <view class='item' bindtap='goOrder' data-type="2">
+      <view wx:if="{{count_id_no_confirm !== 0}}" class='dot'>{{count_id_no_confirm}}</view>
+      <image class="icon" src="/images/order/shouhuo.png" background-size="cover"></image>
+      <view class='text'>待收货</view>
+    </view>
+    <view class='item' bindtap='goOrder' data-type="3">
+      <view wx:if="{{count_id_no_reputation !== 0}}" class='dot'>{{count_id_no_reputation}}</view>
+      <image class="icon" src="/images/order/pj.png" background-size="cover"></image>
+      <view class='text'>待评价</view>
+    </view>
+    <view class='item' bindtap='goOrder' data-type="99">
+      <image class="icon" src="/images/order/shouhou.png" background-size="cover"></image>
+      <view class='text'>售后</view>
+    </view>
+  </view>
+  <view wx:if="{{canHX}}" class="line"></view>
+  <view wx:if="{{canHX}}" class="menu-item" bindtap="scanOrderCode">
+    <view class="l">扫码核销</view>
+    <image class="next" src="/images/icon/next.png"></image>
+  </view>
+  <view class="line"></view>
+  <navigator url="/pages/maidan/index">
+    <view class="menu-item">
+      <view class="l">优惠买单</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <navigator url="/pages/asset/index">
+    <view class="menu-item">
+      <view class="l">资金明细</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <!-- flex布局的新菜单 -->
+  <!-- <view class="menu-item">
+    <view class="l">我的订单</view>
+    <image class="next" src="/images/icon/next.png"></image>
+  </view>
+  <view class="space"></view>
+  <view class="line"></view>
+  <view class="menu-item">
+    <view class="l">我的订单</view>
+    <view class="r">内容</view>
+  </view>
+  <view class="line"></view>
+  <view class="menu-item">
+    <view class="l">我的订单</view>
+    <view class="r">内容</view>
+  </view> -->
+
+  <view class="space"></view>
+  <navigator wx:if="{{!apiUserInfoMap.base.isSeller}}" url="/pages/fx/apply-status">
+    <view class="menu-item">
+      <view class="l">成为分销商</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <navigator wx:else url="/pages/fx/apply-status">
+    <view class="menu-item">
+      <view class="l">分销中心</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view wx:if="{{apiUserInfoMap.base.isSeller}}" class="line"></view>
+  <navigator wx:if="{{apiUserInfoMap.base.isSeller}}" url="/pages/fx/members">
+    <view class="menu-item">
+      <view class="l">销售团队</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view wx:if="{{apiUserInfoMap.base.isSeller}}" class="line"></view>
+  <navigator wx:if="{{apiUserInfoMap.base.isSeller}}" url="/pages/fx/commisionLog">
+    <view class="menu-item">
+      <view class="l">佣金明细</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+
+  <view class="space"></view>
+  <navigator url="/pages/invoice/apply">
+    <view class="menu-item">
+      <view class="l">申请发票</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <navigator url="/pages/invoice/list">
+    <view class="menu-item">
+      <view class="l">发票记录</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+
+  <view class="space"></view>
+  <navigator url="/pages/select-address/index">
+    <view class="menu-item">
+      <view class="l">收货地址</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <navigator url="/pages/coupons/index">
+    <view class="menu-item">
+      <view class="l">领券中心</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <navigator url="/pages/goods/fav">
+    <view class="menu-item">
+      <view class="l">我的收藏</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+
+  <view class="space"></view>
+  <navigator url="/pages/sign/index">
+    <view class="menu-item">
+      <view class="l">每日签到</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <navigator url="/pages/score-excharge/index">
+    <view class="menu-item">
+      <view class="l">积分券兑换积分</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+  <navigator url="/pages/score-excharge/growth">
+    <view class="menu-item">
+      <view class="l">积分兑换成长值</view>
+      <image class="next" src="/images/icon/next.png"></image>
+    </view>
+  </navigator>
+  <view class="line"></view>
+
+  <view class="space"></view>
+  <view wx:if="{{userMobile}}" class="menu-item">
+    <view class="l">绑定手机</view>
+    <view class="r">{{ userMobile }}</view>
+  </view>
+  <view  wx:else class="menu-item">
+    <view class="l">绑定手机</view>
+    <button type="primary" size="mini" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">立即绑定</button>
+  </view>
+
+  <!-- <view class="line"></view>
+  <view class="menu-item">
+    <view class="l">绑定官网账号</view>
+    <image class="next" src="/images/icon/next.png"></image>
+  </view> -->
+
+  
+
+  <view class="space"></view>
+</view>
+
+<van-cell title="关于我们" is-link url="/pages/about/index" />
+<van-cell title="帮助中心" is-link url="/pages/help/index" />
+<van-cell title="清除缓存" is-link bind:click="clearStorage" />
+<van-cell wx:if="{{apiUserInfoMap}}" title="退出登录" is-link bind:click="loginOut" />
+<van-cell wx:else title="立即登陆" is-link bind:click="goLogin" />
+<van-cell wx:if="{{isAdmin}}" title="管理员入口" is-link bind:click="goadmin" />
+<van-cell title="当前版本" value="{{version}}" />
+
+<template is="apifmLogin" data="{{wxlogin: wxlogin}}" />
